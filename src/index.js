@@ -1,4 +1,5 @@
 import Notiflix from 'notiflix';
+import ApiService from './api-service';
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -8,53 +9,6 @@ const refs = {
 
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
-
-class ApiService {
-  constructor() {
-    this.serchQuery = '';
-    this.page = 1;
-    this.numberOfImages = 0;
-    this.numberOfLoadedImages = 0;
-  }
-  fetchImages() {
-    return fetch(
-      `https://pixabay.com/api/?key=34827531-46fe6f83c6cd16e6040b33d37&q=${this.serchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=3`
-    )
-      .then(response => response.json())
-      .then(images => {
-        this.numberOfImages = images.totalHits;
-        this.incrementNomberOfLoadedImages(images.hits.length);
-        this.incrementPage();
-        console.log(this.numberOfLoadedImages);
-        return images;
-      })
-      .catch(console.error);
-  }
-
-  incrementNomberOfLoadedImages(number) {
-    this.numberOfLoadedImages += number;
-  }
-
-  incrementPage() {
-    this.page += 1;
-  }
-
-  resetPage() {
-    this.page = 1;
-  }
-
-  resetNumberOfLoadedImages() {
-    this.numberOfLoadedImages = 0;
-  }
-
-  get query() {
-    return this.serchQuery;
-  }
-
-  set query(newQuery) {
-    this.serchQuery = newQuery;
-  }
-}
 
 const apiService = new ApiService();
 
@@ -119,7 +73,7 @@ function onLoadMore() {
         "We're sorry, but you've reached the end of search results."
       );
     }
-    renderQueryImageCard(images);
+    renderQueryImageCard(images.hits);
   });
 }
 
