@@ -51,10 +51,6 @@ class ApiService {
     return this.serchQuery;
   }
 
-  // get imagesNumber() {
-  //   return this.numberOfImages;
-  // }
-
   set query(newQuery) {
     this.serchQuery = newQuery;
   }
@@ -76,7 +72,7 @@ function onSearch(e) {
   apiService.resetNumberOfLoadedImages();
 
   apiService.fetchImages().then(images => {
-    if (images.length === 0) {
+    if (images.hits.length === 0) {
       refs.loadMoreBtn.classList.add('--is-hidden');
       return Notiflix.Notify.info(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -85,12 +81,12 @@ function onSearch(e) {
 
     refs.loadMoreBtn.classList.remove('--is-hidden');
     clearGallery();
-    renderQueryImageCard(images);
+    renderQueryImageCard(images.hits);
   });
 }
 
-function renderQueryImageCard(images) {
-  const markup = images.hits
+function renderQueryImageCard(arrOfImages) {
+  const markup = arrOfImages
     .map(image => {
       return `<div class="photo-card">
   <img width="370" heigth="270" src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
